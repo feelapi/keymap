@@ -1,6 +1,6 @@
 {
-  "name": "atom-keymap",
-  "version": "8.2.15",
+  "name": "atom-keymap-plasticity",
+  "version": "8.2.17",
   "description": "Atom's DOM-aware keymap module",
   "main": "./lib/keymap-manager",
   "scripts": {
@@ -29,8 +29,7 @@
     "grim": "^1.2.1",
     "keyboard-layout": "2.0.17",
     "pathwatcher": "^8.0.0",
-    "property-accessors": "^1",
-    "season": "^6.0.2"
+    "property-accessors": "^1"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
