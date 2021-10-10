@@ -1,8 +1,9 @@
 {
   "name": "atom-keymap-plasticity",
-  "version": "8.2.17",
+  "version": "8.2.18",
   "description": "Atom's DOM-aware keymap module",
   "main": "./lib/keymap-manager",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "prepare": "npm run clean && npm run compile && npm run lint && npm run atomdoc",
     "clean": "rimraf lib && rimraf api.json",
