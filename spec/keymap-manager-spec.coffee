@@ -927,16 +927,16 @@ describe "KeymapManager", ->
 
     describe "if called with a file path", ->
       it "loads the keybindings from the file at the given path", ->
-        keymapManager.loadKeymap(path.join(__dirname, 'fixtures', 'a.cson'))
+        keymapManager.loadKeymap(path.join(__dirname, 'fixtures', 'a.json'))
         assert.equal(keymapManager.findKeyBindings(command: 'x').length, 1)
 
       describe "if called with watch: true", ->
         [keymapFilePath, subscription] = []
 
         beforeEach ->
-          keymapFilePath = path.join(temp.mkdirSync('keymap-manager-spec'), "keymapManager.cson")
+          keymapFilePath = path.join(temp.mkdirSync('keymap-manager-spec'), "keymapManager.json")
           fs.writeFileSync keymapFilePath, """
-            '.a': 'ctrl-a': 'x'
+            { ".a": { "ctrl-a": "x" } }
           """
           keymapManager.loadKeymap(keymapFilePath, watch: true)
           subscription = keymapManager.watchSubscriptions[keymapFilePath]
@@ -947,8 +947,10 @@ describe "KeymapManager", ->
             done = debounce(done, 500)
 
             fs.writeFileSync keymapFilePath, """
-              '.a': 'ctrl-a': 'y'
-              '.b': 'ctrl-b': 'z'
+            {
+                  ".a": { "ctrl-a": "y" },
+                  ".b": { "ctrl-b": "z" }
+            }
             """
 
             keymapManager.onDidReloadKeymap (event) ->
@@ -961,25 +963,25 @@ describe "KeymapManager", ->
           it "reloads the file's key bindings and notifies ::onDidReloadKeymap observers with the keymap path even if the file is empty", (done) ->
             done = debounce(done, 500)
 
-            fs.writeFileSync keymapFilePath, ""
+            fs.writeFileSync keymapFilePath, "{}"
 
             keymapManager.onDidReloadKeymap (event) ->
               assert.equal(event.path, keymapFilePath)
               assert.equal(keymapManager.getKeyBindings().length, 0)
               done()
 
-          it "reloads the file's key bindings and notifies ::onDidReloadKeymap observers with the keymap path even if the file has only comments", (done) ->
-            done = debounce(done, 500)
+        #   it "reloads the file's key bindings and notifies ::onDidReloadKeymap observers with the keymap path even if the file has only comments", (done) ->
+        #     done = debounce(done, 500)
 
-            fs.writeFileSync keymapFilePath, """
-            #  '.a': 'ctrl-a': 'y'
-            #  '.b': 'ctrl-b': 'z'
-            """
+        #     fs.writeFileSync keymapFilePath, """
+        #     #  '.a': 'ctrl-a': 'y'
+        #     #  '.b': 'ctrl-b': 'z'
+        #     """
 
-            keymapManager.onDidReloadKeymap (event) ->
-              assert.equal(event.path, keymapFilePath)
-              assert.equal(keymapManager.getKeyBindings().length, 0)
-              done()
+        #     keymapManager.onDidReloadKeymap (event) ->
+        #       assert.equal(event.path, keymapFilePath)
+        #       assert.equal(keymapManager.getKeyBindings().length, 0)
+        #       done()
 
           it "emits an event, logs a warning and does not reload if there is a problem reloading the file", (done) ->
             done = debounce(done, 500)
@@ -1003,7 +1005,7 @@ describe "KeymapManager", ->
 
         describe "when the file is moved", ->
           it "removes the bindings", (done) ->
-            newFilePath = path.join(temp.mkdirSync('keymap-manager-spec'), "other-guy.cson")
+            newFilePath = path.join(temp.mkdirSync('keymap-manager-spec'), "other-guy.json")
             fs.moveSync(keymapFilePath, newFilePath)
 
             keymapManager.onDidUnloadKeymap (event) ->
@@ -1016,8 +1018,10 @@ describe "KeymapManager", ->
 
           subscription.dispose()
           fs.writeFileSync keymapFilePath, """
-            '.a': 'ctrl-a': 'y'
-            '.b': 'ctrl-b': 'z'
+            {
+                    ".a": { "ctrl-a": "y" },
+                    ".b": { "ctrl-b": "z" }
+            }
           """
 
           reloaded = false
@@ -1029,7 +1033,7 @@ describe "KeymapManager", ->
             # Can start watching again after cancelling
             keymapManager.loadKeymap(keymapFilePath, watch: true)
             fs.writeFileSync keymapFilePath, """
-              '.a': 'ctrl-a': 'q'
+              { ".a": { "ctrl-a": "q" } }
             """
 
             keymapManager.onDidReloadKeymap ->
