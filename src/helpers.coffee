@@ -150,7 +150,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
       else if characters.unmodified?
         key = characters.unmodified
 
-  if NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]? and event.getModifierState('NumLock')
+  if NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?
     key = NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]
 
   if KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?

@@ -6,3 +6,4 @@ atom
 .coffee/
 api.json
 npm-debug.log
+yarn.lock
