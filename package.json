@@ -1,13 +1,13 @@
 {
   "name": "atom-keymap-plasticity",
-  "version": "8.2.18",
+  "version": "8.2.19",
   "description": "Atom's DOM-aware keymap module",
   "main": "./lib/keymap-manager",
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepare": "npm run clean && npm run compile && npm run lint && npm run atomdoc",
     "clean": "rimraf lib && rimraf api.json",
-    "compile": "coffee --no-header --output lib --compile src && babel src --out-dir lib",
+    "compile": "coffee --no-header --output lib --compile src && babel src --out-dir lib && cp src/index.d.ts lib",
     "lint": "coffeelint -r src spec && eslint src spec",
     "test": "electron-mocha --renderer --preload spec/helpers/setup.js spec/*",
     "test-drive": "SUPPRESS_EXIT=true electron-mocha --no-colors --renderer --interactive --preload spec/helpers/setup.js spec/*",
