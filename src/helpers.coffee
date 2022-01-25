@@ -232,7 +232,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
         KeyboardLayout.getCurrentKeymap()?[event.code]
 
     if characters
-      if event.shiftKey and (!characters.unmodified? or not isNumericCharacter(characters.unmodified))
+      if event.shiftKey and (not characters.unmodified? or not isNumericCharacter(characters.unmodified))
         key = characters.withShift
       else if characters.unmodified?
         key = characters.unmodified
