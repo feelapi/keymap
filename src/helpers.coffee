@@ -59,6 +59,9 @@ isUpperCaseCharacter = (character) ->
 isLowerCaseCharacter = (character) ->
   character? and character.length is 1 and character.toUpperCase() isnt character
 
+isNumericCharacter = (character) ->
+  character? and character.length is 1 and 48 <= character.charCodeAt(0) <= 57
+
 usKeymap = null
 usCharactersForKeyCode = (code) ->
   usKeymap ?= require('./us-keymap')
@@ -222,23 +225,14 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
   # Ensure that shifted writing system characters are reported correctly
   if event.code and key.length is 1
     characters =
-      # TODO: Remove the com.apple.keylayout.DVORAK-QWERTYCMD
-      # case when we are using an Electron version based on Chromium M62
-      # That issue was fixed in https://bugs.chromium.org/p/chromium/issues/detail?id=747358
-      # Use US equivalent character for non-latin characters in keystrokes with modifiers
-      # or when using the dvorak-qwertycmd layout and holding down the command key.
-      # if (key.length is 1 and not isLatinKeymap(KeyboardLayout.getCurrentKeymap())) or
       if (not isLatinKeymap(KeyboardLayout.getCurrentKeymap())) or
          (metaKey and currentLayout.indexOf('DVORAK-QWERTYCMD') > -1)
         usCharactersForKeyCode(event.code)
-      # As of Chromium ~62, KeyboardEvent.key is now sent in its un-shifted
-      # for writing system characters (`8` vs `*`) so we need to manually
-      # fetch the shifted version to maintain our former keystroke output
       else if not isAltModifiedKey
         KeyboardLayout.getCurrentKeymap()?[event.code]
 
     if characters
-      if event.shiftKey
+      if event.shiftKey and (!characters.unmodified? or not isNumericCharacter(characters.unmodified))
         key = characters.withShift
       else if characters.unmodified?
         key = characters.unmodified
@@ -260,7 +254,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
     keystroke += '-' if keystroke.length > 0
     keystroke += 'alt'
 
-  if key is 'shift' or (shiftKey and event.type isnt 'keyup' and (isNonCharacterKey or (isLatinCharacter(key) and isUpperCaseCharacter(key))))
+  if key is 'shift' or (shiftKey and event.type isnt 'keyup' and (isNonCharacterKey or isNumericCharacter(key) or (isLatinCharacter(key) and isUpperCaseCharacter(key))))
     keystroke += '-' if keystroke
     keystroke += 'shift'
 
