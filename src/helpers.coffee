@@ -1,5 +1,5 @@
 {calculateSpecificity} = require 'clear-cut'
-keyboard = navigator.keyboard
+keyboard = navigator.keyboard;
 KeyboardLayout = null
 keyboard.getLayoutMap().then((map) -> KeyboardLayout = map)
 
@@ -142,16 +142,6 @@ parseKeystroke = (keystroke) ->
 exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
   {key, code, ctrlKey, altKey, shiftKey, metaKey} = event
 
-  if key is 'Dead'
-    if process.platform is 'darwin' and characters = KeyboardLayout.get(event.code)
-      if altKey and shiftKey and characters.withAltGraphShift?
-        key = characters.withAltGraphShift
-      else if altKey and characters.withAltGraph?
-        key = characters.withAltGraph
-      else if shiftKey and characters.withShift?
-        key = characters.withShift
-      else if characters.unmodified?
-        key = characters.unmodified
 
   if NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?
     key = NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]
