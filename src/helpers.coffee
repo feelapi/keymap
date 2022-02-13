@@ -1,5 +1,5 @@
 {calculateSpecificity} = require 'clear-cut'
-keyboard = navigator.keyboard;
+keyboard = navigator.keyboard
 KeyboardLayout = null
 keyboard.getLayoutMap().then((map) -> KeyboardLayout = map)
 
