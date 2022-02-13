@@ -1,6 +1,6 @@
 {
   "name": "atom-keymap-plasticity",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "Atom's DOM-aware keymap module",
   "main": "./lib/keymap-manager",
   "types": "./lib/index.d.ts",
@@ -10,6 +10,7 @@
     "compile": "coffee --no-header --output lib --compile src && babel src --out-dir lib && cp src/index.d.ts lib",
     "lint": "coffeelint -r src spec && eslint src spec",
     "test": "electron-mocha --renderer --preload spec/helpers/setup.js spec/*",
+    "watch-test": "electron-mocha --watch --renderer --preload spec/helpers/setup.js spec/*",
     "test-drive": "SUPPRESS_EXIT=true electron-mocha --no-colors --renderer --interactive --preload spec/helpers/setup.js spec/*",
     "ci": "npm run compile && npm run lint && npm run test",
     "atomdoc": "grunt shell:update-atomdoc atomdoc"
@@ -28,7 +29,6 @@
     "event-kit": "^1.0.0",
     "fs-plus": "^3.0.0",
     "grim": "^1.2.1",
-    "keyboard-layout": "2.0.17",
     "property-accessors": "^1"
   },
   "devDependencies": {

@@ -1,5 +1,7 @@
 {calculateSpecificity} = require 'clear-cut'
-KeyboardLayout = require 'keyboard-layout'
+keyboard = navigator.keyboard;
+KeyboardLayout = null
+keyboard.getLayoutMap().then((map) -> KeyboardLayout = map)
 
 MODIFIERS = new Set(['ctrl', 'alt', 'shift', 'cmd'])
 ENDS_IN_MODIFIER_REGEX = /(ctrl|alt|shift|cmd)$/
@@ -140,10 +142,8 @@ parseKeystroke = (keystroke) ->
 exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
   {key, code, ctrlKey, altKey, shiftKey, metaKey} = event
 
-  currentLayout = KeyboardLayout.getCurrentKeyboardLayout()
-
   if key is 'Dead'
-    if process.platform is 'darwin' and characters = KeyboardLayout.getCurrentKeymap()?[event.code]
+    if process.platform is 'darwin' and characters = KeyboardLayout.get(event.code)
       if altKey and shiftKey and characters.withAltGraphShift?
         key = characters.withAltGraphShift
       else if altKey and characters.withAltGraph?
@@ -158,15 +158,6 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
 
   if KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?
     key = KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]
-
-  # Work around Chrome bugs on Linux
-  if process.platform is 'linux'
-    # Fix NumpadDecimal key value being '' with NumLock disabled.
-    if code is 'NumpadDecimal' and not event.getModifierState('NumLock')
-      key = 'delete'
-    # Fix 'Unidentified' key value for '/' key on Brazillian keyboards
-    if code is 'IntlRo' and key is 'Unidentified' and ctrlKey
-      key = '/'
 
   isAltModifiedKey = false
   isNonCharacterKey = key.length > 1
@@ -225,26 +216,10 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
   # Ensure that shifted writing system characters are reported correctly
   if event.code and key.length is 1
     characters =
-      if (not isLatinKeymap(KeyboardLayout.getCurrentKeymap())) or
-         (metaKey and currentLayout.indexOf('DVORAK-QWERTYCMD') > -1)
-        usCharactersForKeyCode(event.code)
-      else if not isAltModifiedKey
-        KeyboardLayout.getCurrentKeymap()?[event.code]
+      if not isAltModifiedKey
+        KeyboardLayout.get(event.code)
 
-    if characters
-      if event.shiftKey and (not characters.unmodified? or not isNumericCharacter(characters.unmodified))
-        key = characters.withShift
-      else if characters.unmodified?
-        key = characters.unmodified
-
-  # Work around https://bugs.chromium.org/p/chromium/issues/detail?id=766800
-  # TODO: Remove this workaround when we are using an Electron version based on chrome M62
-  if metaKey and currentLayout is 'com.apple.keylayout.Slovak' or currentLayout is 'com.apple.keylayout.Slovak-QWERTY'
-    if characters = slovakCmdCharactersForKeyCode(event.code, currentLayout)
-      if event.shiftKey
-        key = characters.withShift
-      else
-        key = characters.unmodified
+    key = characters
 
   keystroke = ''
   if key is 'ctrl' or (ctrlKey and event.type isnt 'keyup')
@@ -254,7 +229,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
     keystroke += '-' if keystroke.length > 0
     keystroke += 'alt'
 
-  if key is 'shift' or (shiftKey and event.type isnt 'keyup' and (isNonCharacterKey or isNumericCharacter(key) or (isLatinCharacter(key) and isUpperCaseCharacter(key))))
+  if key is 'shift' or shiftKey
     keystroke += '-' if keystroke
     keystroke += 'shift'
 
@@ -268,20 +243,10 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
 
   keystroke = normalizeKeystroke("^#{keystroke}") if event.type is 'keyup'
 
-  if customKeystrokeResolvers?
-    for resolver in customKeystrokeResolvers
-      customKeystroke = resolver({
-        keystroke, event,
-        layoutName: KeyboardLayout.getCurrentKeyboardLayout(),
-        keymap: KeyboardLayout.getCurrentKeymap()
-      })
-      if customKeystroke
-        keystroke = normalizeKeystroke(customKeystroke)
-
   keystroke
 
 nonAltModifiedKeyForKeyboardEvent = (event) ->
-  if event.code and (characters = KeyboardLayout.getCurrentKeymap()?[event.code])
+  if event.code and (characters = KeyboardLayout.get(event.code))
     if event.shiftKey
       characters.withShift
     else
