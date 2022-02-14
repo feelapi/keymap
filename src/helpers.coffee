@@ -112,8 +112,6 @@ normalizeKeystroke = (keystroke) ->
     primaryKey = primaryKey.toLowerCase() if primaryKey?
   else
     modifiers.add('shift') if isUpperCaseCharacter(primaryKey)
-    if modifiers.has('shift') and isLowerCaseCharacter(primaryKey)
-      primaryKey = primaryKey.toUpperCase()
 
   keystroke = []
   if not keyup or (keyup and not primaryKey?)

@@ -569,12 +569,12 @@ describe "KeymapManager", ->
   describe "::build(source, bindings)", ->
     it "normalizes keystrokes containing capitalized alphabetic characters", ->
       commandA = keymapManager.build 'test', '*': 'ctrl-shift-l': 'a'
-      commandB = keymapManager.build 'test', '*': 'ctrl-shift-L': 'b'
-      commandC = keymapManager.build 'test', '*': 'ctrl-L': 'c'
+      commandB = keymapManager.build 'test', '*': 'ctrl-shift-l': 'b'
+      commandC = keymapManager.build 'test', '*': 'ctrl-l': 'c'
 
-      assert.equal(commandA[0].keystrokes, 'ctrl-shift-L')
-      assert.equal(commandB[0].keystrokes, 'ctrl-shift-L')
-      assert.equal(commandC[0].keystrokes, 'ctrl-shift-L')
+      assert.equal(commandA[0].keystrokes, 'ctrl-shift-l')
+      assert.equal(commandB[0].keystrokes, 'ctrl-shift-l')
+      assert.equal(commandC[0].keystrokes, 'ctrl-l')
 
     it "normalizes the order of modifier keys based on the Apple interface guidelines", ->
       commandA = keymapManager.build 'test', '*': 'alt-cmd-ctrl-shift-l': 'a'
@@ -582,8 +582,8 @@ describe "KeymapManager", ->
       commandC = keymapManager.build 'test', '*': 'alt-ctrl-l': 'c'
       commandD = keymapManager.build 'test', '*': 'ctrl-alt--': 'd'
 
-      assert.equal(commandA[0].keystrokes, 'ctrl-alt-shift-cmd-L')
-      assert.equal(commandB[0].keystrokes, 'ctrl-shift-L')
+      assert.equal(commandA[0].keystrokes, 'ctrl-alt-shift-cmd-l')
+      assert.equal(commandB[0].keystrokes, 'ctrl-shift-l')
       assert.equal(commandC[0].keystrokes, 'ctrl-alt-l')
       assert.equal(commandD[0].keystrokes, 'ctrl-alt--')
 
