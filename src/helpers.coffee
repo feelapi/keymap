@@ -1,5 +1,5 @@
 {calculateSpecificity} = require 'clear-cut'
-keyboard = navigator.keyboard;
+keyboard = navigator.keyboard
 KeyboardLayout = null
 keyboard.getLayoutMap().then((map) -> KeyboardLayout = map)
 
@@ -237,10 +237,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
 
 nonAltModifiedKeyForKeyboardEvent = (event) ->
   if event.code and (characters = KeyboardLayout.get(event.code))
-    if event.shiftKey
-      characters.withShift
-    else
-      characters.unmodified
+    characters
 
 exports.MODIFIERS = MODIFIERS
 

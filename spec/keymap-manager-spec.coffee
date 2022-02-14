@@ -675,6 +675,7 @@ describe "KeymapManager", ->
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', shiftKey: true})), 'shift-A')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', ctrlKey: true, shiftKey: true})), 'ctrl-shift-A')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '{', shiftKey: true})), 'shift-{')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'Ω', shiftKey: false, altKey: true, keyCode: 90, code: 'KeyZ'})), 'alt-z')
 
     describe "when the KeyboardEvent.key is a capital letter due to caps lock, but shift is not pressed", ->
       it "converts the letter to lower case", ->
