@@ -169,13 +169,7 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
     if key is "altgraph" and process.platform is "win32"
       key = "alt"
   else
-    # Deal with caps-lock issues. Key bindings should always adjust the
-    # capitalization of the key based on the shiftKey state and never the state
-    # of the caps-lock key
-    if shiftKey
-      key = key.toUpperCase()
-    else
-      key = key.toLowerCase()
+    key = key.toLowerCase()
 
     if event.getModifierState('AltGraph') or (process.platform is 'darwin' and altKey)
       # All macOS layouts have an alt-modified character variant for every

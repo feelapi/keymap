@@ -214,7 +214,7 @@ describe "KeymapManager", ->
             'd p': 'dp'
             'v i v a': 'viva!'
             'v i v': 'viv'
-            'shift shift-S x': 'shift-then-s'
+            'shift shift-s x': 'shift-then-s'
           '.editor': 'v': 'enter-visual-mode'
           '.editor.visual-mode': 'i w': 'select-inside-word'
 
@@ -655,7 +655,7 @@ describe "KeymapManager", ->
       it "returns a string that identifies the unmodified keystroke", ->
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '"', code: 'Digit2', shiftKey: true})), 'shift-2')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a'})), 'a')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', shiftKey: true})), 'shift-A')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', shiftKey: true})), 'shift-a')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '['})), '[')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '*', shiftKey: true})), 'shift-*')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'ArrowLeft'})), 'left')
@@ -673,8 +673,8 @@ describe "KeymapManager", ->
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '*', ctrlKey: true, shiftKey: true})), 'ctrl-shift-*')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '8', code: 'Digit8', ctrlKey: true, shiftKey: true})), 'ctrl-shift-8')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'ArrowLeft', ctrlKey: true, altKey: true, metaKey: true})), 'ctrl-alt-cmd-left')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', shiftKey: true})), 'shift-A')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', ctrlKey: true, shiftKey: true})), 'ctrl-shift-A')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', shiftKey: true})), 'shift-a')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'A', ctrlKey: true, shiftKey: true})), 'ctrl-shift-a')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '{', shiftKey: true})), 'shift-{')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'Ω', shiftKey: false, altKey: true, keyCode: 90, code: 'KeyZ'})), 'alt-z')
 
@@ -685,11 +685,11 @@ describe "KeymapManager", ->
 
     describe "when the KeyboardEvent.key is a lower-case letter due to caps lock + shift", ->
       it "converts the letter to upper case and honors the shift key", ->
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true})), 'shift-A')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true, altKey: true})), 'alt-shift-A')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true, ctrlKey: true})), 'ctrl-shift-A')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true})), 'shift-a')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true, altKey: true})), 'alt-shift-a')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'a', shiftKey: true, ctrlKey: true})), 'ctrl-shift-a')
       it "doesn't drop the ctrl-alt modifiers when there is no AltGraph variant", ->
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'p', shiftKey: true, altKey: true, ctrlKey: true})), 'ctrl-alt-shift-P')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'p', shiftKey: true, altKey: true, ctrlKey: true})), 'ctrl-alt-shift-p')
 
     describe "when the KeyboardEvent.key is 'Delete' but KeyboardEvent.code is 'Backspace' due to pressing ctrl-delete with numlock enabled on Windows", ->
       it "translates as ctrl-backspace instead of ctrl-delete", ->
@@ -755,10 +755,10 @@ describe "KeymapManager", ->
         mockProcessPlatform('linux')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '@', modifierState: {AltGraph: true}})), '@')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: '€', modifierState: {AltGraph: true}})), '€')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'Ë', shiftKey: true, modifierState: {AltGraph: true}})), 'shift-Ë')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'Ë', shiftKey: true, modifierState: {AltGraph: true}})), 'shift-ë')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'g', altKey: true, altGraphKey: false})), 'alt-g')
         assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'e', altKey: true, altGraphKey: false})), 'alt-e')
-        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'E', altKey: true, shiftKey: true, altGraphKey: false})), 'alt-shift-E')
+        assert.equal(keymapManager.keystrokeForKeyboardEvent(buildKeydownEvent({key: 'E', altKey: true, shiftKey: true, altGraphKey: false})), 'alt-shift-e')
 
       it "falls back to the non-alt key if other modifiers are combined with ALtGraph on Linux", ->
         mockProcessPlatform('linux')
