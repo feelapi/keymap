@@ -1,6 +1,6 @@
 {
   "name": "atom-keymap-plasticity",
-  "version": "10.0.2",
+  "version": "10.0.3",
   "description": "Atom's DOM-aware keymap module",
   "main": "./lib/keymap-manager",
   "types": "./lib/index.d.ts",
