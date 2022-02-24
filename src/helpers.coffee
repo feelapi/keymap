@@ -30,6 +30,18 @@ NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE = {
   'Numpad8': 'numpad8',
   'Numpad9': 'numpad9'
 }
+DIGIT_KEYS_BY_KEYBOARD_EVENT_CODE = {
+  'Digit0': '0',
+  'Digit1': '1',
+  'Digit2': '2',
+  'Digit3': '3',
+  'Digit4': '4',
+  'Digit5': '5',
+  'Digit6': '6',
+  'Digit7': '7',
+  'Digit8': '8',
+  'Digit9': '9'
+}
 
 LATIN_KEYMAP_CACHE = new WeakMap()
 isLatinKeymap = (keymap) ->
@@ -144,6 +156,9 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
   if NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?
     key = NUMPAD_KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]
 
+  if DIGIT_KEYS_BY_KEYBOARD_EVENT_CODE[code]?
+    key = DIGIT_KEYS_BY_KEYBOARD_EVENT_CODE[code]
+
   if KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]?
     key = KEY_NAMES_BY_KEYBOARD_EVENT_CODE[code]
 
@@ -201,13 +216,13 @@ exports.keystrokeForKeyboardEvent = (event, customKeystrokeResolvers) ->
           altKey = event.getModifierState('AltGraph')
           isAltModifiedKey = not altKey
 
-  # Ensure that shifted writing system characters are reported correctly
   if event.code and key.length is 1
-    characters =
-      if not isAltModifiedKey
-        KeyboardLayout.get(event.code)
-
-    key = characters
+    if not isLatinCharacter(key)
+      characters = usCharactersForKeyCode(event.code)
+      if event.shiftKey
+        key = characters.withShift
+      else if characters.unmodified?
+        key = characters.unmodified
 
   keystroke = ''
   if key is 'ctrl' or (ctrlKey and event.type isnt 'keyup')
